@@ -7,7 +7,7 @@ def build_schedule(source, options={})
   ca_file = options[:ca_file] || ENV['SSL_CERT_FILE']
 
   case source
-    when Sources::WATER_TAXI
+    when Sources::WEST_SEATTLE
       response = fetch_taxi_page(ca_path: ca_path, ca_file: ca_file)
       if response.is_a? Net::HTTPSuccess
         parser = Sources::KingCountyWaterTaxi::Parser.new

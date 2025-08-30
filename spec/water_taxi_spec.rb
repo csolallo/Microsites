@@ -2,24 +2,18 @@
 # frozen_string_literal: true
 
 require 'rspec'
-require_relative '../bin/sources/king_county_water_taxi/main'
+require_relative '../bin/sources/core'
+require_relative '../bin/sources/king_county_water_taxi/west_seattle_parser'
 
-describe Sources::KingCountyWaterTaxi::Parser do
-  before(:context) do 
-    @contents = File.read('./samples/taxi-schedule.html')
-  end
+describe Sources::KingCountyWaterTaxi::WestSeattleParser do
 
-  it 'should correctly parse schedule from West Seattle' do
-    subject.parse @conents do |timetable|
-      puts timetable
+  context "mon-thurs schedule" do
+    it 'should report format error if table columns changed' do
+      contents = File.read('./samples/ws_m2t_changed_th.html')
+      expect { subject.parse(contents) }.to raise_error(Sources::FormatChanged)
     end
+
+
   end
 
-  xit 'should correctly parse schedule from downtown Seattle' do
-    
-  end
-
-  xit 'should correctly parse schedule from Vashon' do
-    
-  end
 end
