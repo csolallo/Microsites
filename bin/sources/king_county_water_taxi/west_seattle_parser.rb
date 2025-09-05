@@ -1,42 +1,62 @@
 require 'nokogiri'
 require_relative 'base_parser'
 
-require 'debug'
-
 module Sources
   module KingCountyWaterTaxi
-    PAGE_URI = 'https://kingcounty.gov/en/dept/metro/travel-options/water-taxi/west-seattle#toc-sailing-schedule'
-
+    
     class WestSeattleParser < BaseParser
-      def initialize
-        @seattle_dartures = []
-        @west_seattle_departures = []
-      end
-
+      PAGE_URI = 'https://kingcounty.gov/en/dept/metro/travel-options/water-taxi/west-seattle#toc-sailing-schedule'
+      
       def parse(contents)
+        result = {
+          :m2t => {
+            :seattle => [],
+            :west_seattle => []
+          },
+          :fri => {
+            :seattle => [],
+            :west_seattle => []
+          },
+          :sat => {
+            :seattle => [],
+            :west_seattle => []
+          },
+          :sun => {
+            :seattle => [],
+            :west_seattle => []
+          }
+        }
+
+        on_key_match = Proc.new { |key, old_value, new_value| old_value + new_value }
+
         doc = Nokogiri::HTML4(contents)
+
         schedule_containers = doc.css('div[id^=schedule-table]')
         schedule_containers.each do |container|
+          seattle_departures, west_seattle_departures = *parse_schedule(container, 'Departs Pier 50', 'Departs West Seattle')
+          temp = {
+            :seattle => seattle_departures,
+            :west_seattle => west_seattle_departures
+          }
           if container.values[0] == 'schedule-table-mon-to-thurs'
-            parse_mon_to_thurs_shedule container
+            result[:m2t].merge!(temp, &on_key_match)
+          elsif container.values[0] == 'schedule-table-fri'
+            result[:fri].merge!(temp, &on_key_match)
+          elsif container.values[0] == 'schedule-table-sat'
+            result[:sat].merge!(temp, &on_key_match)
+          elsif container.values[0] == 'schedule-table-sun'
+            result[:sun].merge!(temp, &on_key_match)
           else
-            raise FormatChanged
+            raise Sources::FormatChanged.new "unexpected container #{container.values[0]}"
           end
         end
-        result = {}
         if block_given? 
           yield result
         else 
           return result
         end
-      end 
-      
-      private
-
-      def parse_mon_to_thurs_shedule(div)
-        validate_columns(div, ['Departs Pier 50', 'Departs West Seattle'])
-        # extract times
-      end
+      end     
     end
+
   end
 end

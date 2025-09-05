@@ -6,4 +6,5 @@ module Sources
   
   class FormatChanged < StandardError; end
 
+  class NetworkError < StandardError; end
 end

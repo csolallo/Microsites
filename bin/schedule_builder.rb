@@ -1,22 +1,29 @@
 require 'net/https'
 require 'uri'
 require_relative 'sources/core.rb'
+require_relative 'sources/king_county_water_taxi/west_seattle_parser'
+require_relative 'sources/king_county_water_taxi/vashon_parser'
 
 def build_schedule(source, options={})
-  ca_path = options[:ca_path] || ENV['SSL_CERT_PATH']
-  ca_file = options[:ca_file] || ENV['SSL_CERT_FILE']
-
   case source
     when Sources::WEST_SEATTLE
-      response = fetch_taxi_page(ca_path: ca_path, ca_file: ca_file)
-      if response.is_a? Net::HTTPSuccess
-        parser = Sources::KingCountyWaterTaxi::Parser.new
-        timetable = parser.parse response.body
-      else
-        # TODO: raise an error
-      end
+      uri = URI.parse(Sources::KingCountyWaterTaxi::WestSeattleParser::PAGE_URI)
+      parser = Sources::KingCountyWaterTaxi::WestSeattleParser.new
+    when Sources::VASHON
+      uri = URI.parse(Sources::KingCountyWaterTaxi::VashonParser::PAGE_URI)
+      parser = Sources::KingCountyWaterTaxi::VashonParser.new
     else
-      raise Sources::UnknownSource.new "#{source} is invalid"
+      raise Sources::UnknownSource "#{source} is unknown" 
+  end
+
+  ca_path = options[:ca_path] || ENV['SSL_CERT_PATH']
+  ca_file = options[:ca_file] || ENV['SSL_CERT_FILE']
+  
+  response = fetch_taxi_page(uri, ca_path: ca_path, ca_file: ca_file)
+  if response.is_a? Net::HTTPSuccess
+    timetable = parser.parse response.body
+  else
+    raise Sources::NetworkError.new "#{response}"
   end
 
   unless timetable.nil?
@@ -28,8 +35,7 @@ def build_schedule(source, options={})
   end
 end
 
-def fetch_taxi_page(**options)
-  uri = URI.parse(Sources::KingCountyWaterTaxi::PAGE_URI)
+def fetch_taxi_page(uri, **options)
   Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
     http.ca_path = options[:ca_path]
     http.ca_file = options[:ca_file]

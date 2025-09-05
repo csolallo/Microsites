@@ -1,0 +1,38 @@
+{
+    "seattle": {
+        "lat": 0,
+        "lon": 0,
+        "west_seattle": {
+            "mon-thurs": [],
+            "friday": [],
+            "saturday": [],
+            "sunday": []
+        },
+        "vashon": {
+            "mon-thurs": [],
+            "friday": [],
+            "saturday": [],
+            "sunday": []
+        }
+    },
+    "vashon": {
+        "lat": 0,
+        "lon": 0,
+        "seattle": {
+            "mon-thurs": [],
+            "friday": [],
+            "saturday": [],
+            "sunday": []
+        }
+    },
+    "west_seattle": {
+        "lat": 0,
+        "lon": 0,
+        "seattle": {
+            "mon-thurs": [],
+            "friday": [],
+            "saturday": [],
+            "sunday": []
+        }
+    }
+}
