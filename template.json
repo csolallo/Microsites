@@ -1,7 +1,7 @@
 {
     "seattle": {
-        "lat": 0,
-        "lon": 0,
+        "lat": 47.601489050062696,
+        "lon": -122.3380801352654,
         "west_seattle": {
             "mon-thurs": [],
             "friday": [],
@@ -16,8 +16,8 @@
         }
     },
     "vashon": {
-        "lat": 0,
-        "lon": 0,
+        "lat": 47.5103171911735,
+        "lon": -122.46388351902903,
         "seattle": {
             "mon-thurs": [],
             "friday": [],
@@ -26,8 +26,8 @@
         }
     },
     "west_seattle": {
-        "lat": 0,
-        "lon": 0,
+        "lat": 47.58953372309896,
+        "lon": -122.38023503531164,
         "seattle": {
             "mon-thurs": [],
             "friday": [],
