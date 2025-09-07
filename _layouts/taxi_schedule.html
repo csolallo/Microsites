@@ -3,9 +3,20 @@
   <head>
     <meta charset="utf-8">
     <title>{{ page.title }}</title>
-     <link rel="stylesheet" href="/assets/main.css">
+    <link rel="stylesheet" href="/assets/main.css">
+    <style>
+      table+p {
+        font-style: italic;
+        font-size: small;
+      }
+    </style>
   </head>
   <body>
-    {{ content }}
+    <div>
+      <span style="float: inline-end">
+        <a href="{{ page.page_source }}">source</a>
+      </span>
+      {{ content }}
+    </div>
   </body>
 </html>

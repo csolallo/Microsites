@@ -12,7 +12,7 @@ require_relative 'bin/utils'
 # 
 # The schedule for that day will be represented as a markdown table
 namespace 'posts' do
-  task :generate do |t, args|
+  task :generate => [:clear] do |t, args|
     urls = get_source_page_urls
     ws_timetable = build_schedule Sources::WEST_SEATTLE
     vashon_timetable = build_schedule Sources::VASHON
@@ -39,15 +39,17 @@ def create_ws_post(day, source_url, timetable)
     f.print "page_source: #{source_url}\n"
     f.print "---\n"
     f.print "\n"
-    f.print "**{{ page.title | propercase }}** to **{{page.destination}}**\n"
+    f.print "**{{ page.title | propercase }}** ➡ ⛴️ ➡ **{{page.destination}}**\n"
     f.print "\n"
     f.print "|#{'Departs'.ljust(8)}|\n"
     f.print "|#{'-' * 8}|\n"
-
+    
     key = day.strftime('%a').to_schedule_key
     timetable[key][:west_seattle].each do |time|
       f.print "|#{time.ljust(8)}|\n"
     end
+    f.print "\n"
+    f.print "Generated: {{ site.time | date: \"%m/%d/%Y @ %H:%M:%S\" }}\n"
   end
 end
 
@@ -60,7 +62,7 @@ def create_vashon_post(day, source_url, timetable)
     f.print "page_source: #{source_url}\n"
     f.print "---\n"
     f.print "\n"
-    f.print "**{{ page.title | propercase }}** to **{{page.destination}}**\n"
+    f.print "**{{ page.title | propercase }}** ➡ ⛴️ ➡ **{{page.destination}}**\n"
     f.print "\n"
     f.print "|#{'Departs'.ljust(8)}|\n"
     f.print "|#{'-' * 8}|\n"
@@ -71,7 +73,9 @@ def create_vashon_post(day, source_url, timetable)
       has_times = true
       f.print "|#{time.ljust(8)}|\n"
     end
-    f.print '||' unless has_times
+    f.print "||\n" unless has_times
+    f.print "\n"
+    f.print "Generated: {{ site.time | date: \"%m/%d/%Y @ %H:%M:%S\" }}\n"
   end  
 end
 
@@ -83,7 +87,7 @@ def create_seattle_post(day, source_url, ws_timetable, vashon_timetable)
     f.print "page_source: #{source_url}\n"
     f.print "---\n"
     f.print "\n"
-    f.print "**{{ page.title | propercase }}** to **West Seattle**\n"
+    f.print "**{{ page.title | propercase }}** ➡ ⛴️ ➡ **West Seattle**\n"
     f.print "\n"
     f.print "|#{'Departs'.ljust(8)}|\n"
     f.print "|#{'-' * 8}|\n"
@@ -95,7 +99,7 @@ def create_seattle_post(day, source_url, ws_timetable, vashon_timetable)
     end
 
     f.print "\n"
-    f.print "**{{ page.title | propercase }}** to **Vashon**\n"
+    f.print "**{{ page.title | propercase }}** &#27A1 ⛴️ ➡ **Vashon**\n"
     f.print "\n"
     f.print "|#{'Departs'.ljust(8)}|\n"
     f.print "|#{'-' * 8}|\n"
@@ -105,6 +109,8 @@ def create_seattle_post(day, source_url, ws_timetable, vashon_timetable)
       has_times = true
       f.print "|#{time.ljust(8)}|\n"
     end
-    f.print '||' unless has_times
+    f.print "||\n" unless has_times
+    f.print "\n"
+    f.print "Generated: {{ site.time | date: \"%m/%d/%Y @ %H:%M:%S\" }}\n"
   end
 end  
