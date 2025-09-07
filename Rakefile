@@ -17,6 +17,8 @@ namespace 'posts' do
     ws_timetable = build_schedule Sources::WEST_SEATTLE
     vashon_timetable = build_schedule Sources::VASHON
 
+    Dir.mkdir('_posts') unless Dir.exist? ('_posts')
+    
     today = Date.today
     (today-6..today).each do |day|
       create_ws_post day, urls[:west_seattle], ws_timetable
@@ -26,7 +28,9 @@ namespace 'posts' do
   end
   
   task :clear do |t, args|
-    Dir.foreach('_posts') { |file| File.delete("_posts/#{file}") unless File.directory? "_posts/#{file}" }
+    if Dir.exist?('_posts')
+      Dir.foreach('_posts') { |file| File.delete("_posts/#{file}") unless File.directory? "_posts/#{file}" }
+    end
   end
 end
 
