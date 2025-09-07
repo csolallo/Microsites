@@ -35,6 +35,13 @@ def build_schedule(source, options={})
   end
 end
 
+def get_source_page_urls
+  {
+    :west_seattle => Sources::KingCountyWaterTaxi::WestSeattleParser::PAGE_URI,
+    :vashon => Sources::KingCountyWaterTaxi::VashonParser::PAGE_URI
+  }  
+end
+
 def fetch_taxi_page(uri, **options)
   Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
     http.ca_path = options[:ca_path]

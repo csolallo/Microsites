@@ -9,8 +9,22 @@ module Sources
       
       def parse(contents)
         result = {
-          :seattle => [],
-          :vashon => []
+          :m2t => {
+            :seattle => [],
+            :vashon => []
+          },
+          :fri => {
+            :seattle => [],
+            :vashon => []
+          },
+          :sat => {
+            :seattle => [],
+            :vashon => []
+          },
+          :sun => {
+            :seattle => [],
+            :vashon => []
+          }
         }
 
         doc = Nokogiri::HTML4(contents)
@@ -20,8 +34,11 @@ module Sources
         end
 
         seattle_departures, vashon_departures = *parse_schedule(schedule_container, 'Departs Pier 50', 'Departs Vashon')
-        result[:seattle] = seattle_departures
-        result[:valshon] = vashon_departures
+        result[:m2t][:seattle] = seattle_departures
+        result[:fri][:seattle] = seattle_departures
+
+        result[:m2t][:vashon] = vashon_departures
+        result[:fri][:vashon] = vashon_departures
 
         if block_given? 
           yield result
