@@ -1,0 +1,66 @@
+---
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ site.title }}</title>
+    <link rel="stylesheet" href="/assets/main.css">
+    <script>
+        {% json_const docks %}
+
+        function isLocationAvailable() {
+            return ("geolocation" in navigator);
+        }
+
+        /* taken directly from here: https://www.movable-type.co.uk/scripts/latlong.html */
+        function haversine(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // metres
+            const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                    Math.cos(φ1) * Math.cos(φ2) *
+                    Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            const d = R * c; // in metres
+            return d
+        }
+
+        window.addEventListener("load", (event) => {
+            if (isLocationAvailable) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    let closest_key = ""
+                    let closest = Number.MAX_VALUE
+                    Object.keys(docks).forEach( key => {    
+                        lat = docks[key].lat 
+                        lon = docks[key].lon
+                        dist = haversine(position.coords.latitude, position.coords.longitude, lat, lon)
+                        if (dist < closest) {
+                            closest = dist
+                            closest_key = key
+                        }
+                    })
+                    if (closest_key !== '') {
+                        curr_datetime = moment().utc().tz('America/Los_Angeles')
+                        day = curr_datetime.format('ddd')
+
+                        href = `${closest_key}/${day}.html`
+                        document.getElementById('times').src = href
+                    }
+                });                
+            }
+        });
+    </script>
+  </head>
+  <body>
+    <section>
+      <iframe id="times" src="#" title="sailing schedule for nearest port"></iframe>
+    </section>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://momentjs.com/downloads/moment-timezone-with-data-10-year-range.js"></script>
+  </body>
+</html>
