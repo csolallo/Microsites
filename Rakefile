@@ -30,6 +30,12 @@ namespace 'posts' do
   end
 end
 
+namespace :assets do
+  task precompile: ['posts:generate'] do
+    exec("JEKYLL_ENV=production jekyll build")
+  end   
+end
+
 def create_ws_post(day, source_url, timetable)
   file_name = day.strftime('%Y-%m-%d-west-seattle.md')
   File.open("./_posts/#{file_name}", 'w') do |f|
@@ -99,7 +105,7 @@ def create_seattle_post(day, source_url, ws_timetable, vashon_timetable)
     end
 
     f.print "\n"
-    f.print "**{{ page.title | propercase }}** &#27A1 ⛴️ ➡ **Vashon**\n"
+    f.print "**{{ page.title | propercase }}** ➡ ⛴️ ➡ **Vashon**\n"
     f.print "\n"
     f.print "|#{'Departs'.ljust(8)}|\n"
     f.print "|#{'-' * 8}|\n"
