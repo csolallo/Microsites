@@ -38,7 +38,8 @@ end
 def get_source_page_urls
   {
     :west_seattle => Sources::KingCountyWaterTaxi::WestSeattleParser::PAGE_URI,
-    :vashon => Sources::KingCountyWaterTaxi::VashonParser::PAGE_URI
+    :vashon => Sources::KingCountyWaterTaxi::VashonParser::PAGE_URI,
+    :seattle => 'https://kingcounty.gov/en/dept/metro/travel-options/water-taxi'
   }  
 end
 
